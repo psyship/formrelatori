@@ -93,7 +93,7 @@
 
 <script>
   /* INCOLLARE QUI, FRA GLI APICI, L'INDIRIZZO DELL'APP WEB CHE FINISCE CON /exec */
-  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbzT-s32AA2LccMNxGjyfVDdFto_d2pbaNgfQVXpf2yEtHkLa0tI75N0lgwAWRUYCNGS/exec';
+  var URL_MODULO = 'https://script.google.com/macros/s/AKfycby06RRZQ_X9MqSkXFOdxLS8Gz1LsIn3NwhvagOUfcQkLHGueW08im3rBtMN-LQxJspQ/exec';
   var DATI = { stato: 'aperto', caricamento: true, urlInvio: URL_MODULO, provvisorio: true, numPreferenze: 6, docenti: [], indicazioni: '',
     corsi: [{ codice: 'PS', nome: 'Psicologia e Salute' }, { codice: 'PPS', nome: 'Psicologia e Processi Sociali' }] };
   var attesaDati = null;
@@ -427,7 +427,7 @@
     svuota();
     intestazione(false);
     var box = el('div', { classe: 'esito', role: 'status', tabindex: '-1' }, [
-      el('p', { testo: 'Il form è stato registrato correttamente. Controlli la sua casella di posta elettronica istituzionale: riceverà una ricevuta con il riepilogo delle preferenze indicate.', style: 'margin:0' }),
+      el('p', { testo: 'Il form è stato registrato correttamente. Controlli la sua casella di posta elettronica istituzionale: entro pochi minuti riceverà una ricevuta con il riepilogo delle preferenze indicate.', style: 'margin:0' }),
       r.riepilogo.data ? el('p', { style: 'margin:0.6rem 0 0', testo: 'Data di invio: ' + r.riepilogo.data + '.' }) : null,
       r.ricevutaInviata === false ? el('p', { style: 'margin:0.6rem 0 0', testo: 'A causa dell\'elevato numero di richieste, la ricevuta potrebbe arrivare entro alcune ore.' }) : null]);
     app().appendChild(box);

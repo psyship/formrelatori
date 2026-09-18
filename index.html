@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Richiesta del relatore per la prova finale</title>
+<meta charset="utf-8">
+<!-- Richiesta del relatore per la prova finale. Autore: Valerio Ghezzi -->
+<style>
+  :root {
+    --rosso: #822433; --rosso-scuro: #5c1823; --sfondo: #f2f2f2; --superficie: #ffffff;
+    --testo: #1d1d1b; --secondario: #45464a; --bordo: #b8b8b8; --linea: #dcdcdc;
+    --giallo: #fff3b0; --giallo-bordo: #c99a00; --errore-sfondo: #fdeceb; --errore-testo: #8f1d1d;
+    --ok-sfondo: #eaf4ec; --ok-bordo: #2e6b3f; --fuoco: #1a5fb4; --corpo: 19px;
+  }
+  html.testo-1 { --corpo: 22px; }
+  html.testo-2 { --corpo: 25px; }
+  html.sfondo-caldo { --sfondo: #f7f1e3; --superficie: #fffcf4; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f2f2f2; background: var(--sfondo); color: #1d1d1b; color: var(--testo);
+    font-family: Verdana, Tahoma, "Segoe UI", sans-serif; font-size: 19px; font-size: var(--corpo);
+    line-height: 1.65; letter-spacing: 0.01em; word-spacing: 0.06em; -webkit-text-size-adjust: 100%; }
+  p, dd, dt, label, legend, li, .aiuto, .errore-campo, .avviso { overflow-wrap: break-word; word-wrap: break-word; }
+  .testata { background: #822433; color: #fff; }
+  .testata-interna { max-width: 46rem; margin: 0 auto; padding: 1rem 1.25rem; }
+  .ateneo { font-size: 1.05em; font-weight: bold; margin: 0; line-height: 1.3; }
+  .facolta { font-size: 0.85em; margin: 0.15rem 0 0; line-height: 1.3; }
+  main { display: block; max-width: 46rem; margin: 0 auto; padding: 1.25rem 1.25rem 4rem; }
+  .comandi { display: flex; flex-wrap: wrap; justify-content: flex-end; margin: 0 -0.25rem 1rem; }
+  .comandi button { font-size: 0.8em; min-height: 44px; padding: 0.3rem 0.8rem; border-width: 1px; margin: 0.25rem; }
+  h1 { font-size: 1.4em; line-height: 1.3; margin: 0 0 0.4rem; color: #5c1823; }
+  h2 { font-size: 1.15em; line-height: 1.35; margin: 0 0 1.1rem; color: #5c1823; }
+  h1:focus, h2:focus, .esito:focus, .avviso:focus { outline: none; }
+  p { margin: 0 0 1em; }
+  a { color: #5c1823; }
+  .sottotitolo { color: #45464a; margin-bottom: 1.25rem; }
+  .passi { display: flex; flex-wrap: wrap; list-style: none; padding: 0; margin: 0 0 1.25rem; border-bottom: 2px solid #dcdcdc; }
+  .passi li { padding: 0.4rem 0 0.5rem; margin: 0 1.25rem -2px 0; color: #45464a; font-size: 0.85em; border-bottom: 4px solid transparent; }
+  .passi li.attuale { color: #5c1823; font-weight: bold; border-bottom-color: #822433; }
+  .pannello { background: #fff; background: var(--superficie); border: 1px solid #dcdcdc; padding: 1.5rem; }
+  .campo { margin-bottom: 1.4rem; }
+  label, legend { display: block; font-weight: bold; margin-bottom: 0.35rem; }
+  legend { padding: 0; }
+  .aiuto { display: block; font-weight: normal; color: #45464a; font-size: 0.9em; margin-bottom: 0.4rem; }
+  input[type=text], input[type=email], select { display: block; width: 100%; font: inherit; color: #1d1d1b; background: #fff;
+    border: 2px solid #b8b8b8; border-radius: 3px; padding: 0.55rem 0.7rem; min-height: 50px; }
+  select { -webkit-appearance: menulist; }
+  fieldset { border: 0; padding: 0; margin: 0 0 1.4rem; min-width: 0; }
+  .opzione { display: flex; align-items: center; min-height: 44px; margin: 0.25rem 0; font-weight: normal; cursor: pointer; }
+  .opzione input { width: 26px; height: 26px; margin: 0 0.75rem 0 0; flex: none; }
+  .provvisorio { background: #fff3b0; border-left: 6px solid #c99a00; padding: 1rem 1.1rem; }
+  .etichetta-provvisoria { font-size: 0.85em; font-weight: bold; margin: 0 0 0.8rem; }
+  :focus { outline: none; }
+  :focus-visible { outline: 3px solid #822433; outline-offset: 2px; }
+  input:focus, select:focus { border-color: #822433; }
+  button { font: inherit; cursor: pointer; border-radius: 3px; min-height: 50px; padding: 0.55rem 1.3rem;
+    border: 2px solid #822433; background: #fff; color: #5c1823; }
+  button:hover { background: #f7ecee; }
+  button.primario { background: #822433; color: #fff; }
+  button.primario:hover { background: #5c1823; }
+  button[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .azioni { display: flex; flex-wrap: wrap; justify-content: space-between; margin: 1.5rem -0.35rem 0; }
+  .azioni button { margin: 0.35rem; }
+  .azioni .primario { margin-left: auto; }
+  .preferenza { border-left: 4px solid #dcdcdc; padding-left: 0.9rem; }
+  .preferenza.compilata { border-left-color: #822433; }
+  .settore { font-size: 0.9em; color: #45464a; margin-top: 0.3rem; min-height: 1.5em; }
+  .avviso { border-left: 6px solid #8f1d1d; background: #fdeceb; padding: 0.75rem 1rem; margin: 0 0 1.2rem; }
+  .errore-campo { color: #8f1d1d; font-weight: bold; font-size: 0.9em; margin-top: 0.35rem; }
+  .con-errore input, .con-errore select { border-color: #8f1d1d; }
+  .regole { border-left: 4px solid #822433; padding: 0.1rem 0 0.1rem 1rem; margin-bottom: 1.5rem; }
+  .esito { background: #eaf4ec; border-left: 6px solid #2e6b3f; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+  .riepilogo { margin: 0 0 1rem; }
+  .riepilogo div { padding: 0.45rem 0; border-bottom: 1px solid #dcdcdc; }
+  .riepilogo dt { font-weight: bold; }
+  .riepilogo dd { margin: 0; }
+  details.informativa { border: 1px solid #dcdcdc; padding: 0.6rem 1rem; margin: 0 0 1rem; background: #fff; }
+  details.informativa summary { cursor: pointer; font-weight: bold; color: #5c1823; min-height: 44px; padding-top: 0.4rem; }
+  details.informativa h3 { font-size: 1em; margin: 1rem 0 0.3rem; }
+  details.informativa p { font-size: 0.9em; }
+  .messaggio-unico { background: #fff; border: 1px solid #dcdcdc; border-left: 6px solid #822433; padding: 1.5rem; font-size: 1.05em; }
+  .messaggio-unico p { margin: 0; }
+  .piede { max-width: 46rem; margin: 0 auto; padding: 0 1.25rem 3rem; color: #45464a; font-size: 0.85em; }
+  .piede h2 { font-size: 1em; color: #5c1823; margin: 0 0 0.4rem; }
+  .piede p { margin: 0; }
+</style>
+</head>
+<body>
+<header class="testata"><div class="testata-interna">
+  <p class="ateneo">Sapienza Università di Roma</p>
+  <p class="facolta">Facoltà di Medicina e Psicologia</p>
+</div></header>
+<main id="app"></main>
+<footer class="piede" id="piede"></footer>
+
+<script>
+  /* INCOLLARE QUI, FRA GLI APICI, L'INDIRIZZO DELL'APP WEB CHE FINISCE CON /exec */
+  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbxLygqdlgXKWjYz3B5Od_5ZIgMfJxak53yeMSYBmQa7W7u-xhM6m1CqaMUAeN4PhUyH/exec';
+  var DATI = { stato: 'aperto', caricamento: true, urlInvio: URL_MODULO, provvisorio: true, numPreferenze: 6, docenti: [], indicazioni: '',
+    corsi: [{ codice: 'PS', nome: 'Psicologia e Salute' }, { codice: 'PPS', nome: 'Psicologia e Processi Sociali' }] };
+  var attesaDati = null;
+  var TITOLO = 'Richiesta del relatore per la prova finale';
+  var MSG = {
+    EMAIL: 'L\'indirizzo di posta elettronica istituzionale non risulta corretto. Per favore, controlli.',
+    MATRICOLA: 'Il numero di matricola contiene 6 o 7 cifre. Per favore, controlli.',
+    MATRICOLA_EMAIL: 'Il numero di matricola non corrisponde a quello presente nell\'indirizzo di posta elettronica istituzionale. Per favore, controlli.'
+  };
+  var INFORMATIVA = [
+    ['', 'Ai sensi dell\'art. 13 del Regolamento (UE) 2016/679 (di seguito «GDPR») e del D.Lgs. 30 giugno 2003, n. 196, come modificato dal D.Lgs. 10 agosto 2018, n. 101, Sapienza Università di Roma fornisce le seguenti informazioni sul trattamento dei dati personali raccolti con il modulo di richiesta del relatore per la prova finale dei corsi di laurea in Psicologia e Salute e in Psicologia e Processi Sociali.'],
+    ['Titolare del trattamento', 'Università degli Studi di Roma «La Sapienza», nella persona del legale rappresentante pro tempore, domiciliato per la carica in Piazzale Aldo Moro 5, 00185 Roma. Email: rettricesapienza@uniroma1.it; PEC: protocollosapienza@cert.uniroma1.it.'],
+    ['Responsabile della protezione dei dati', 'Email: responsabileprotezionedati@uniroma1.it; PEC: rpd@cert.uniroma1.it.'],
+    ['Dati trattati', 'Corso di laurea, cognome, nome, numero di matricola, indirizzo di posta elettronica istituzionale, dichiarazione relativa agli accordi presi con un docente, sei preferenze sui docenti, data e ora di invio. Il modulo non richiede dati appartenenti alle categorie particolari indicate all\'art. 9 del GDPR.'],
+    ['Finalità e base giuridica', 'I dati sono trattati per assegnare il relatore della prova finale tenendo conto delle preferenze indicate e per inviare allo studente la ricevuta della richiesta. Il trattamento si fonda sull\'art. 6, par. 1, lett. e) del GDPR, in quanto necessario all\'esecuzione di un compito di interesse pubblico connesso all\'attività didattica e alla gestione della carriera universitaria.'],
+    ['Natura del conferimento', 'Il conferimento dei dati è necessario perché le preferenze siano considerate. In mancanza della richiesta, il relatore viene assegnato senza tenere conto di preferenze.'],
+    ['Modalità del trattamento', 'I dati sono trattati con strumenti informatici, mediante i servizi Google Workspace adottati dall\'Ateneo, da personale autorizzato e con misure tecniche e organizzative adeguate a garantirne la riservatezza e la sicurezza, ai sensi dell\'art. 32 del GDPR.'],
+    ['Destinatari', 'I dati sono accessibili alla segreteria didattica di Psicologia, ai responsabili dei corsi di laurea e ai docenti coinvolti nell\'assegnazione, nella misura necessaria alle rispettive funzioni. Non sono diffusi né comunicati a terzi, salvo gli obblighi previsti dalla legge; l\'esito dell\'assegnazione è reso noto secondo le modalità stabilite dalla Facoltà.'],
+    ['Periodo di conservazione', 'I dati sono conservati per il tempo necessario all\'assegnazione del relatore e allo svolgimento della prova finale, nel rispetto dei principi di cui all\'art. 5 del GDPR e dei termini previsti per la documentazione relativa alla carriera universitaria.'],
+    ['Diritti dell\'interessato', 'L\'interessato può esercitare i diritti previsti dagli artt. 15-22 del GDPR (accesso, rettifica, cancellazione, limitazione e opposizione al trattamento) rivolgendosi al Titolare o al Responsabile della protezione dei dati ai recapiti indicati. Il vademecum e il modulo per l\'esercizio dei diritti sono pubblicati nella pagina «Settore Privacy» del sito dell\'Ateneo (www.uniroma1.it/it/pagina/settore-privacy).'],
+    ['Reclamo', 'L\'interessato che ritenga il trattamento non conforme alla normativa può proporre reclamo al Garante per la protezione dei dati personali (www.garanteprivacy.it), ai sensi dell\'art. 77 del GDPR.']
+  ];
+  var livelloTesto = 0;
+  var stato = { passo: 1, inviato: false, corso: '', cognome: '', nome: '', matricola: '', email: '', email2: '', preferenze: [] };
+
+  function el(tag, attributi, figli) {
+    var n = document.createElement(tag), k, v, i;
+    if (attributi) for (k in attributi) if (attributi.hasOwnProperty(k)) {
+      v = attributi[k];
+      if (k === 'testo') n.textContent = v;
+      else if (k === 'classe') n.className = v;
+      else if (k.indexOf('on') === 0) n.addEventListener(k.slice(2), v);
+      else if (v === true) n.setAttribute(k, '');
+      else if (v !== false && v !== null && v !== undefined) n.setAttribute(k, v);
+    }
+    if (figli) for (i = 0; i < figli.length; i++) if (figli[i]) n.appendChild(typeof figli[i] === 'string' ? document.createTextNode(figli[i]) : figli[i]);
+    return n;
+  }
+  function $(id) { return document.getElementById(id); }
+  function ogni(lista, fn) { Array.prototype.forEach.call(lista, fn); }
+  function app() { return $('app'); }
+  function svuota() { app().innerHTML = ''; }
+  function perId(id) { for (var i = 0; i < DATI.docenti.length; i++) if (DATI.docenti[i].id === id) return DATI.docenti[i]; return null; }
+  function nomeCorso(c) { for (var i = 0; i < DATI.corsi.length; i++) if (DATI.corsi[i].codice === c) return DATI.corsi[i].nome; return ''; }
+  function etichetta(d) { return d.titolo + ' ' + d.nome + ' ' + d.cognome + ' – SSD ' + d.ssd; }
+  function valore(id) { var n = $(id); return n ? String(n.value).replace(/^\s+|\s+$/g, '') : ''; }
+
+  function comandiLettura() {
+    var r = document.documentElement, piu, meno, sfondo;
+    function aggiorna() {
+      r.className = r.className.replace(/\s*testo-\d/g, '') + (livelloTesto ? ' testo-' + livelloTesto : '');
+      piu.disabled = livelloTesto === 2; meno.disabled = livelloTesto === 0;
+      sfondo.setAttribute('aria-pressed', /sfondo-caldo/.test(r.className) ? 'true' : 'false');
+    }
+    piu = el('button', { type: 'button', testo: 'Ingrandisci il testo', onclick: function () { livelloTesto = Math.min(2, livelloTesto + 1); aggiorna(); } });
+    meno = el('button', { type: 'button', testo: 'Riduci il testo', onclick: function () { livelloTesto = Math.max(0, livelloTesto - 1); aggiorna(); } });
+    sfondo = el('button', { type: 'button', testo: 'Sfondo color crema', onclick: function () {
+      r.className = /sfondo-caldo/.test(r.className) ? r.className.replace(/\s*sfondo-caldo/g, '') : r.className + ' sfondo-caldo'; aggiorna(); } });
+    var g = el('div', { classe: 'comandi', role: 'group', 'aria-label': 'Preferenze di lettura' }, [piu, meno, sfondo]);
+    aggiorna();
+    return g;
+  }
+
+  function intestazione(conPassi) {
+    var a = app();
+    a.appendChild(comandiLettura());
+    a.appendChild(el('h1', { testo: TITOLO }));
+    if (!conPassi) return;
+    if (DATI.chiusura) a.appendChild(el('p', { classe: 'sottotitolo', testo: 'Il modulo è aperto fino al ' + DATI.chiusura + '.' }));
+    var nomi = ['Dati dello studente', 'Preferenze', 'Verifica e invio'], lista = el('ol', { classe: 'passi', 'aria-label': 'Fasi della compilazione' }), i;
+    for (i = 0; i < nomi.length; i++) lista.appendChild(el('li', { classe: stato.passo === i + 1 ? 'attuale' : '', 'aria-current': stato.passo === i + 1 ? 'step' : false, testo: (i + 1) + '. ' + nomi[i] }));
+    a.appendChild(lista);
+  }
+
+  function messaggioUnico(testo) {
+    stato.inviato = true;
+    svuota();
+    intestazione(false);
+    app().appendChild(el('div', { classe: 'messaggio-unico', role: 'status' }, [el('p', { testo: testo })]));
+  }
+
+  function apriPasso(id) {
+    window.scrollTo(0, 0);
+    var t = $(id);
+    if (t) { t.setAttribute('tabindex', '-1'); try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); } }
+  }
+
+  function campoTesto(id, etichettaCampo, aiuto, valoreIniziale, extra) {
+    extra = extra || {};
+    return el('div', { classe: 'campo', id: 'campo-' + id }, [
+      el('label', { 'for': id, testo: etichettaCampo }),
+      aiuto ? el('span', { classe: 'aiuto', id: id + '-aiuto', testo: aiuto }) : null,
+      el('input', { id: id, name: id, type: extra.tipo || 'text', value: valoreIniziale || '', autocomplete: extra.autocomplete || 'off',
+        inputmode: extra.inputmode || false, 'aria-describedby': aiuto ? id + '-aiuto' : false, spellcheck: 'false', autocapitalize: extra.autocapitalize || false })
+    ]);
+  }
+
+  function mostraErrori(errori) {
+    var p = document.querySelector('.pannello'), titolo = p.querySelector('h2'), primo = null;
+    p.insertBefore(el('div', { classe: 'avviso', role: 'alert', tabindex: '-1',
+      testo: errori.length === 1 ? errori[0].testo : 'Ci sono ' + errori.length + ' punti da correggere, segnalati accanto ai campi.' }), titolo.nextSibling);
+    ogni(errori, function (e) {
+      var c = $('campo-' + e.campo); if (!c) return;
+      c.className += ' con-errore';
+      c.appendChild(el('div', { classe: 'errore-campo', id: e.campo + '-errore', testo: e.testo }));
+      var input = c.querySelector('input, select');
+      if (input) {
+        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute('aria-describedby', ((input.getAttribute('aria-describedby') || '') + ' ' + e.campo + '-errore').replace(/^\s+/, ''));
+        if (!primo) primo = input;
+      }
+    });
+    primo = primo || p.querySelector('.avviso');
+    try { primo.focus({ preventScroll: true }); } catch (x) { primo.focus(); }
+    if (primo.scrollIntoView) primo.scrollIntoView(false);
+  }
+
+  /* ---------- passo 1 ---------- */
+  function passo1(errori) {
+    stato.passo = 1;
+    svuota();
+    intestazione(true);
+    var p = el('section', { classe: 'pannello', 'aria-labelledby': 't1' }, [el('h2', { id: 't1', testo: 'Dati dello studente' })]);
+    var sel = el('select', { id: 'corso', name: 'corso' }, [el('option', { value: '', testo: '' })]);
+    ogni(DATI.corsi, function (c) { sel.appendChild(el('option', { value: c.codice, selected: stato.corso === c.codice, testo: c.nome })); });
+    p.appendChild(el('div', { classe: 'campo', id: 'campo-corso' }, [el('label', { 'for': 'corso', testo: 'Corso di laurea' }), sel]));
+    p.appendChild(campoTesto('cognome', 'Cognome', null, stato.cognome, { autocomplete: 'family-name', autocapitalize: 'words' }));
+    p.appendChild(campoTesto('nome', 'Nome', null, stato.nome, { autocomplete: 'given-name', autocapitalize: 'words' }));
+    p.appendChild(campoTesto('matricola', 'Matricola', '6 o 7 cifre, senza spazi.', stato.matricola, { inputmode: 'numeric' }));
+    var campoEmail = campoTesto('email', 'Email istituzionale', 'Nel formato cognome.matricola@studenti.uniroma1.it', stato.email,
+      { tipo: 'email', autocomplete: 'email', autocapitalize: 'none' });
+    if (DATI.provvisorio) {
+      campoEmail.className += ' provvisorio';
+      campoEmail.insertBefore(el('p', { classe: 'etichetta-provvisoria', testo: 'Campo provvisorio: in questa fase di prova il modulo accetta qualsiasi indirizzo email valido.' }), campoEmail.firstChild);
+    }
+    ogni(['copy', 'cut'], function (ev) { campoEmail.querySelector('input').addEventListener(ev, function (e) { e.preventDefault(); }); });
+    p.appendChild(campoEmail);
+    var campoEmail2 = campoTesto('email2', 'Ripeta l\'email istituzionale', 'Digiti nuovamente l\'indirizzo: non è possibile incollarlo.', stato.email2,
+      { tipo: 'email', autocomplete: 'off', autocapitalize: 'none' });
+    ogni(['paste', 'drop'], function (ev) { campoEmail2.querySelector('input').addEventListener(ev, function (e) { e.preventDefault(); }); });
+    p.appendChild(campoEmail2);
+    p.appendChild(el('div', { classe: 'azioni' }, [el('button', { type: 'button', classe: 'primario', testo: 'Prosegui', onclick: vaiA2 })]));
+    app().appendChild(p);
+    if (errori && errori.length) mostraErrori(errori); else apriPasso('t1');
+  }
+
+  var nomeRe = /^[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u017E][A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u017E' .\-]{0,59}$/;
+
+  function controllaEmail(email, matricola) {
+    var generale = /^[a-z0-9][a-z0-9._%+\-]*@[a-z0-9]([a-z0-9\-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]*[a-z0-9])?)*\.[a-z]{2,}$/;
+    if (!email || email.length > 120 || email.indexOf('..') !== -1 || !generale.test(email)) return { campo: 'email', testo: MSG.EMAIL };
+    if (!DATI.provvisorio && !/^[a-z0-9'\-]+(\.[a-z0-9'\-]+)*\.(\d{6,7})@studenti\.uniroma1\.it$/.test(email)) return { campo: 'email', testo: MSG.EMAIL };
+    var cifre = /(?:^|[._\-])(\d{6,7})@/.exec(email);
+    if (cifre && /^\d{6,7}$/.test(matricola) && cifre[1] !== matricola) return { campo: 'matricola', testo: MSG.MATRICOLA_EMAIL };
+    return null;
+  }
+
+  function vaiA2() {
+    if (DATI.caricamento) {
+      attesaDati = vaiA2;
+      var b = document.querySelector('.azioni .primario');
+      if (b) { b.disabled = true; b.textContent = 'Caricamento dei docenti…'; }
+      return;
+    }
+    var precedente = stato.corso, errori = [], e;
+    stato.corso = valore('corso');
+    stato.cognome = valore('cognome').replace(/\s+/g, ' ');
+    stato.nome = valore('nome').replace(/\s+/g, ' ');
+    stato.matricola = valore('matricola');
+    stato.email = valore('email').toLowerCase();
+    stato.email2 = valore('email2').toLowerCase();
+    if (precedente && precedente !== stato.corso) {
+      stato.preferenze = stato.preferenze.map(function (id) { var d = perId(id); return d && d.corsi.indexOf(stato.corso) !== -1 ? id : ''; });
+    }
+    if (!stato.corso) errori.push({ campo: 'corso', testo: 'Selezioni il corso di laurea.' });
+    if (!nomeRe.test(stato.cognome)) errori.push({ campo: 'cognome', testo: stato.cognome ? 'Scriva il cognome utilizzando solo lettere, spazi, apostrofi o trattini.' : 'Scriva il cognome.' });
+    if (!nomeRe.test(stato.nome)) errori.push({ campo: 'nome', testo: stato.nome ? 'Scriva il nome utilizzando solo lettere, spazi, apostrofi o trattini.' : 'Scriva il nome.' });
+    if (!/^\d{6,7}$/.test(stato.matricola)) errori.push({ campo: 'matricola', testo: MSG.MATRICOLA });
+    e = controllaEmail(stato.email, stato.matricola);
+    if (e) errori.push(e);
+    if (!e || e.campo !== 'email') {
+      if (!stato.email2) errori.push({ campo: 'email2', testo: 'Digiti nuovamente l\'indirizzo di posta elettronica.' });
+      else if (stato.email2 !== stato.email) errori.push({ campo: 'email2', testo: 'I due indirizzi di posta elettronica non coincidono. Per favore, controlli.' });
+    }
+    if (errori.length) return passo1(errori);
+    passo2();
+  }
+
+  /* ---------- passo 2 ---------- */
+  function passo2(errori) {
+    stato.passo = 2;
+    svuota();
+    intestazione(true);
+    var p = el('section', { classe: 'pannello', 'aria-labelledby': 't2' }, [el('h2', { id: 't2', testo: 'Preferenze' })]);
+    var regole = el('div', { classe: 'regole' });
+    ogni(String(DATI.indicazioni || '').split(/\n\s*\n/), function (par) { if (par.replace(/\s/g, '')) regole.appendChild(el('p', { testo: par })); });
+    p.appendChild(regole);
+    var docentiCorso = DATI.docenti.filter(function (d) { return d.corsi.indexOf(stato.corso) !== -1; }), i;
+    for (i = 0; i < DATI.numPreferenze; i++) {
+      var sel = el('select', { id: 'preferenza' + i, 'aria-describedby': 'settore' + i });
+      sel.appendChild(el('option', { value: '', testo: 'Selezioni un docente' }));
+      ogni(docentiCorso, function (d) {
+        var o = el('option', { value: d.id, testo: d.cognome + ' ' + d.nome + ' – ' + d.ssd });
+        o.setAttribute('data-etichetta', d.cognome + ' ' + d.nome + ' – ' + d.ssd);
+        sel.appendChild(o);
+      });
+      sel.value = stato.preferenze[i] || '';
+      (function (k) { sel.addEventListener('change', function () { stato.preferenze[k] = this.value; aggiornaMenu(); }); })(i);
+      p.appendChild(el('div', { classe: 'campo preferenza', id: 'campo-preferenza' + i }, [
+        el('label', { 'for': 'preferenza' + i, testo: (i + 1) + 'ª preferenza' }), sel, el('div', { classe: 'settore', id: 'settore' + i })]));
+    }
+    p.appendChild(el('div', { classe: 'azioni' }, [
+      el('button', { type: 'button', testo: 'Torna indietro', onclick: function () { passo1(); } }),
+      el('button', { type: 'button', classe: 'primario', testo: 'Prosegui', onclick: vaiA3 })]));
+    app().appendChild(p);
+    aggiornaMenu();
+    if (errori && errori.length) mostraErrori(errori); else apriPasso('t2');
+  }
+
+  function aggiornaMenu() {
+    for (var i = 0; i < DATI.numPreferenze; i++) {
+      var sel = $('preferenza' + i), usati = {}, j, d;
+      for (j = 0; j < DATI.numPreferenze; j++) { d = perId(stato.preferenze[j]); if (d && j !== i) usati[d.gruppo] = j + 1; }
+      ogni(sel.options, function (o) {
+        if (!o.value) return;
+        var n = usati[perId(o.value).gruppo];
+        o.disabled = !!n;
+        o.textContent = o.getAttribute('data-etichetta') + (n ? ' (settore già indicato come ' + n + 'ª preferenza)' : '');
+      });
+      d = perId(stato.preferenze[i]);
+      $('settore' + i).textContent = d ? 'Settore scientifico-disciplinare: ' + d.ssd : '';
+      $('campo-preferenza' + i).className = 'campo preferenza' + (d ? ' compilata' : '');
+    }
+  }
+
+  function vaiA3() {
+    var errori = [], gruppi = {}, i, d;
+    for (i = 0; i < DATI.numPreferenze; i++) {
+      d = perId(stato.preferenze[i]);
+      if (!d || d.corsi.indexOf(stato.corso) === -1) { errori.push({ campo: 'preferenza' + i, testo: 'Selezioni un docente come ' + (i + 1) + 'ª preferenza.' }); continue; }
+      if (gruppi[d.gruppo] !== undefined) {
+        errori.push({ campo: 'preferenza' + i, testo: stato.preferenze[gruppi[d.gruppo]] === d.id
+          ? 'Questo docente è già indicato come ' + (gruppi[d.gruppo] + 1) + 'ª preferenza: ne selezioni un altro.'
+          : 'Questo docente appartiene allo stesso settore (o allo stesso raggruppamento di settori) della ' + (gruppi[d.gruppo] + 1) + 'ª preferenza: selezioni un docente di un altro settore.' });
+      } else gruppi[d.gruppo] = i;
+    }
+    if (errori.length) return passo2(errori);
+    passo3();
+  }
+
+  /* ---------- passo 3 ---------- */
+  function riepilogo(r) {
+    var voci = [['Corso di laurea', r.corso], ['Cognome', r.cognome], ['Nome', r.nome], ['Matricola', r.matricola], ['Email istituzionale', r.email]], dl = el('dl', { classe: 'riepilogo' });
+    ogni(r.preferenze, function (x, i) { voci.push([(i + 1) + 'ª preferenza', x]); });
+    ogni(voci, function (v) { dl.appendChild(el('div', null, [el('dt', { testo: v[0] }), el('dd', { testo: v[1] })])); });
+    return dl;
+  }
+
+  function informativa() {
+    var d = el('details', { classe: 'informativa' }, [el('summary', { testo: 'Informativa sul trattamento dei dati personali' })]);
+    ogni(INFORMATIVA, function (s) {
+      if (s[0]) d.appendChild(el('h3', { testo: s[0] }));
+      d.appendChild(el('p', { testo: s[1] }));
+    });
+    return d;
+  }
+
+  function passo3(errore) {
+    stato.passo = 3;
+    svuota();
+    intestazione(true);
+    var p = el('section', { classe: 'pannello', 'aria-labelledby': 't3' }, [el('h2', { id: 't3', testo: 'Verifica e invio' }),
+      el('p', { testo: 'Verifichi i dati riportati. Dopo l\'invio non sarà possibile modificarli.' })]);
+    p.appendChild(riepilogo({ corso: nomeCorso(stato.corso), cognome: stato.cognome, nome: stato.nome, matricola: stato.matricola, email: stato.email,
+      preferenze: stato.preferenze.slice(0, DATI.numPreferenze).map(function (id) { return etichetta(perId(id)); }) }));
+    p.appendChild(informativa());
+    var conferma = el('input', { type: 'checkbox', id: 'conferma' });
+    var invia = el('button', { type: 'button', classe: 'primario', id: 'invia', testo: 'Invia la richiesta', disabled: true, onclick: inviaDati });
+    conferma.addEventListener('change', function () { invia.disabled = !conferma.checked; });
+    p.appendChild(el('label', { classe: 'opzione', 'for': 'conferma' }, [conferma,
+      'Dichiaro di aver verificato i dati e le sei preferenze indicate e di aver letto l\'informativa sul trattamento dei dati personali.']));
+    p.appendChild(el('div', { id: 'stato-invio', role: 'status', classe: 'aiuto' }));
+    p.appendChild(el('div', { classe: 'azioni' }, [el('button', { type: 'button', testo: 'Modifica le preferenze', id: 'modifica', onclick: function () { passo2(); } }), invia]));
+    app().appendChild(p);
+    if (errore) mostraErrori([{ campo: '-', testo: errore }]); else apriPasso('t3');
+  }
+
+  function inviaDati() {
+    $('invia').disabled = true;
+    $('modifica').disabled = true;
+    $('conferma').disabled = true;
+    var info = $('stato-invio');
+    info.textContent = 'Invio in corso. Non chiuda la pagina.';
+    var pacchetto = { corso: stato.corso, cognome: stato.cognome, nome: stato.nome, matricola: stato.matricola, email: stato.email,
+      preferenze: stato.preferenze.slice(0, DATI.numPreferenze) };
+    invioConRipetizioni(pacchetto, info, 0);
+  }
+
+  function invioConRipetizioni(pacchetto, info, tentativo) {
+    function ripeti() {
+      if (tentativo >= 12) {
+        info.textContent = '';
+        $('invia').disabled = false; $('modifica').disabled = false; $('conferma').disabled = false;
+        return mostraErrori([{ campo: '-', testo: 'La richiesta non è stata registrata. Riprovi tra qualche minuto.' }]);
+      }
+      info.textContent = 'Il servizio è molto richiesto: l\'invio viene ripetuto automaticamente. Non chiuda la pagina.';
+      var attesa = Math.min(15000, 1000 * Math.pow(2, Math.min(tentativo, 4))) * (0.5 + Math.random());
+      setTimeout(function () { invioConRipetizioni(pacchetto, info, tentativo + 1); }, attesa);
+    }
+    function gestisci(r) {
+      if (!r || r.codice === 'OCCUPATO') { tentativo = Math.min(tentativo, 3); return ripeti(); }
+      if (r.codice === 'SERVER') return ripeti();
+      if (r.ok) return esito(r);
+      if (r.codice === 'CHIUSO' || r.codice === 'GIA_INVIATA') return messaggioUnico(r.messaggio);
+      if (/^preferenza/.test(r.campo || '')) return passo2([{ campo: r.campo, testo: r.messaggio }]);
+      if (r.campo) return passo1([{ campo: r.campo, testo: r.messaggio }]);
+      passo3(r.messaggio);
+    }
+    function conGoogle() {
+      if (typeof google === 'undefined' || !google.script) return ripeti();
+      google.script.run.withSuccessHandler(gestisci).withFailureHandler(ripeti).inviaRichiesta(pacchetto);
+    }
+    if (DATI.urlInvio && window.fetch) {
+      window.fetch(DATI.urlInvio, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(pacchetto) })
+        .then(function (risposta) { return risposta.json(); })
+        .then(gestisci, conGoogle);
+    } else {
+      conGoogle();
+    }
+  }
+
+  function esito(r) {
+    stato.inviato = true;
+    svuota();
+    intestazione(false);
+    var box = el('div', { classe: 'esito', role: 'status', tabindex: '-1' }, [
+      el('p', { testo: 'Il form è stato registrato correttamente. Controlli la sua casella di posta elettronica istituzionale: riceverà una ricevuta con il riepilogo delle preferenze indicate.', style: 'margin:0' }),
+      r.riepilogo.data ? el('p', { style: 'margin:0.6rem 0 0', testo: 'Data di invio: ' + r.riepilogo.data + '.' }) : null,
+      r.ricevutaInviata === false ? el('p', { style: 'margin:0.6rem 0 0', testo: 'A causa dell\'elevato numero di richieste, la ricevuta potrebbe arrivare entro alcune ore.' }) : null]);
+    app().appendChild(box);
+    app().appendChild(el('h2', { testo: 'Riepilogo della richiesta' }));
+    app().appendChild(riepilogo(r.riepilogo));
+    try { box.focus({ preventScroll: true }); } catch (e) { box.focus(); }
+    window.scrollTo(0, 0);
+  }
+
+  function piede() {
+    var r = DATI.recapiti, f = $('piede');
+    if (!r || !f) return;
+    var righe = [r.struttura, r.indirizzo, r.email ? 'Email: ' + r.email : '', r.telefono ? 'Telefono: ' + r.telefono : '', r.orari];
+    f.appendChild(el('h2', { testo: r.nome || 'Segreteria didattica' }));
+    ogni(righe, function (x) { if (x) f.appendChild(el('p', { testo: x })); });
+  }
+
+  function leggiCampiPasso1() {
+    if (stato.passo !== 1 || !$('cognome')) return;
+    stato.corso = valore('corso'); stato.cognome = valore('cognome'); stato.nome = valore('nome');
+    stato.matricola = valore('matricola'); stato.email = valore('email');
+  }
+
+  function caricaDati(tentativo) {
+    var fatto = false;
+    function riprova() {
+      if (fatto) return; fatto = true;
+      if (tentativo >= 6) { $('piede').innerHTML = ''; return messaggioUnico('Il servizio non è al momento disponibile. Riprovi tra qualche minuto.'); }
+      setTimeout(function () { caricaDati(tentativo + 1); }, 1500 * (tentativo + 1));
+    }
+    if (!window.fetch) return messaggioUnico('Il suo browser non è aggiornato: apra il modulo con un browser recente.');
+    window.fetch(URL_MODULO + '?formato=json').then(function (r) { return r.json(); }).then(function (d) {
+      if (fatto) return; fatto = true;
+      if (!d || !d.stato) return riprova();
+      var focus = document.activeElement ? document.activeElement.id : '';
+      leggiCampiPasso1();
+      d.urlInvio = URL_MODULO;
+      DATI = d;
+      $('piede').innerHTML = ''; piede();
+      if (DATI.stato !== 'aperto') return messaggioUnico(DATI.messaggio);
+      if (stato.passo === 1) {
+        if (DATI.provvisorio !== true) {
+          passo1();
+          if (focus && $(focus)) $(focus).focus();
+        } else if (DATI.chiusura && !document.querySelector('.sottotitolo')) {
+          var h1 = document.querySelector('h1');
+          if (h1) h1.parentNode.insertBefore(el('p', { classe: 'sottotitolo', testo: 'Il modulo è aperto fino al ' + DATI.chiusura + '.' }), h1.nextSibling);
+        }
+      }
+      if (attesaDati) { var f = attesaDati; attesaDati = null; f(); }
+    }, riprova);
+  }
+
+  (function avvio() {
+    passo1();
+    caricaDati(0);
+  })();
+
+  window.addEventListener('beforeunload', function (e) {
+    if (!stato.inviato && (stato.cognome || stato.preferenze.length)) { e.preventDefault(); e.returnValue = ''; }
+  });
+</script>
+</body>
+</html>

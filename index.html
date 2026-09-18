@@ -88,19 +88,20 @@
   <p class="ateneo">Sapienza Università di Roma</p>
   <p class="facolta">Facoltà di Medicina e Psicologia</p>
 </div></header>
+<noscript><div style="max-width:46rem;margin:0 auto;padding:1.5rem 1.25rem;font-size:1.05em">Per compilare questo modulo è necessario attivare JavaScript nel browser.</div></noscript>
 <main id="app"></main>
 <footer class="piede" id="piede"></footer>
 
 <script>
   /* INCOLLARE QUI, FRA GLI APICI, L'INDIRIZZO DELL'APP WEB CHE FINISCE CON /exec */
-  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbzz5JBWyl9OD6HHe1mepuPz86zhjmOc_LlcpHmZZxK4lvLhUSptO3vwfd-9UJplwFwf/exec';
+  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbxVBRvqliF6XHRM7ptRQNpaR-aRycwVO7dbePtS-Xv4WWe8f0rxVibIygMgcY8RJcQ7/exec';
   var DATI = { stato: 'aperto', caricamento: true, urlInvio: URL_MODULO, provvisorio: true, numPreferenze: 6, docenti: [], indicazioni: '',
     corsi: [{ codice: 'PS', nome: 'Psicologia e Salute' }, { codice: 'PPS', nome: 'Psicologia e Processi Sociali' }] };
   var attesaDati = null;
   var contatoreChiamate = 0;
 
   /* Chiamata al server tramite <script>: nessun browser la blocca. */
-  function chiamaServer(parametri, esito, errore) {
+  function chiamaServer(parametri, esito, errore, attesaMassima) {
     var nome = 'risposta' + (++contatoreChiamate) + '_' + Math.floor(Math.random() * 1e6);
     var s = document.createElement('script');
     var chiuso = false, timer;
@@ -111,7 +112,7 @@
     }
     window[nome] = function (dati) { if (chiuso) return; chiuso = true; pulisci(); esito(dati); };
     s.onerror = function () { if (chiuso) return; chiuso = true; pulisci(); errore(); };
-    timer = setTimeout(function () { if (chiuso) return; chiuso = true; pulisci(); errore(); }, 20000);
+    timer = setTimeout(function () { if (chiuso) return; chiuso = true; pulisci(); errore(); }, attesaMassima || 20000);
     var coda = 'callback=' + nome + '&t=' + new Date().getTime();
     for (var k in parametri) if (parametri.hasOwnProperty(k)) coda += '&' + k + '=' + encodeURIComponent(parametri[k]);
     s.src = URL_MODULO + '?' + coda;
@@ -133,7 +134,7 @@
     ['Modalità del trattamento', 'I dati sono trattati con strumenti informatici, mediante i servizi Google Workspace adottati dall\'Ateneo, da personale autorizzato e con misure tecniche e organizzative adeguate a garantirne la riservatezza e la sicurezza, ai sensi dell\'art. 32 del GDPR.'],
     ['Destinatari', 'I dati sono accessibili alla segreteria didattica di Psicologia, ai responsabili dei corsi di laurea e ai docenti coinvolti nell\'assegnazione, nella misura necessaria alle rispettive funzioni. Non sono diffusi né comunicati a terzi, salvo gli obblighi previsti dalla legge; l\'esito dell\'assegnazione è reso noto secondo le modalità stabilite dalla Facoltà.'],
     ['Periodo di conservazione', 'I dati sono conservati per il tempo necessario all\'assegnazione del relatore e allo svolgimento della prova finale, nel rispetto dei principi di cui all\'art. 5 del GDPR e dei termini previsti per la documentazione relativa alla carriera universitaria.'],
-    ['Diritti dell\'interessato', 'L\'interessato può esercitare i diritti previsti dagli artt. 15-22 del GDPR (accesso, rettifica, cancellazione, limitazione e opposizione al trattamento) rivolgendosi al Titolare o al Responsabile della protezione dei dati ai recapiti indicati. Il vademecum e il modulo per l\'esercizio dei diritti sono pubblicati nella pagina «Settore Privacy» del sito dell\'Ateneo (www.uniroma1.it/it/pagina/settore-privacy).'],
+    ['Diritti dell\'interessato', 'L\'interessato può esercitare i diritti previsti dagli artt. 15-22 del GDPR, nei casi e nei limiti stabiliti dalla normativa applicabile, rivolgendosi al Titolare o al Responsabile della protezione dei dati ai recapiti indicati. Il vademecum e il modulo per l\'esercizio dei diritti sono pubblicati nella pagina «Settore Privacy» del sito dell\'Ateneo (www.uniroma1.it/it/pagina/settore-privacy).'],
     ['Reclamo', 'L\'interessato che ritenga il trattamento non conforme alla normativa può proporre reclamo al Garante per la protezione dei dati personali (www.garanteprivacy.it), ai sensi dell\'art. 77 del GDPR.']
   ];
   var livelloTesto = 0;
@@ -159,6 +160,7 @@
   function perId(id) { for (var i = 0; i < DATI.docenti.length; i++) if (DATI.docenti[i].id === id) return DATI.docenti[i]; return null; }
   function nomeCorso(c) { for (var i = 0; i < DATI.corsi.length; i++) if (DATI.corsi[i].codice === c) return DATI.corsi[i].nome; return ''; }
   function etichetta(d) { return d.titolo + ' ' + d.nome + ' ' + d.cognome + ' – SSD ' + d.ssd; }
+  function parole(n) { var v = ['zero', 'una', 'due', 'tre', 'quattro', 'cinque', 'sei', 'sette', 'otto', 'nove', 'dieci']; return v[n] || String(n); }
   function valore(id) { var n = $(id); return n ? String(n.value).replace(/^\s+|\s+$/g, '') : ''; }
 
   function comandiLettura() {
@@ -254,17 +256,20 @@
       ogni(['paste', 'drop'], function (ev) { campoEmail2.querySelector('input').addEventListener(ev, function (e) { e.preventDefault(); }); });
       p.appendChild(campoEmail2);
     }
+    p.appendChild(el('div', { id: 'stato-caricamento', role: 'status', classe: 'aiuto' }));
     p.appendChild(el('div', { classe: 'azioni' }, [el('button', { type: 'button', classe: 'primario', testo: 'Avanti', onclick: vaiA2 })]));
     app().appendChild(p);
     if (errori && errori.length) mostraErrori(errori); else apriPasso('t1');
   }
 
-  var nomeRe = /^[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u017E][A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u017E' .\-]{0,59}$/;
+  var nomeRe = /^[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u017E][A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u017E'\u2019 .\-]{0,59}$/;
+  try { nomeRe = new RegExp('^[\\p{L}\\p{M}][\\p{L}\\p{M}\'\u2019 .-]{0,59}$', 'u'); } catch (e) { /* browser senza supporto Unicode: resta la regola precedente */ }
 
   function controllaEmail(email, matricola) {
     var generale = /^[a-z0-9][a-z0-9._%+\-]*@[a-z0-9]([a-z0-9\-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]*[a-z0-9])?)*\.[a-z]{2,}$/;
     if (!email || email.length > 120 || email.indexOf('..') !== -1 || !generale.test(email)) return { campo: 'email', testo: MSG.EMAIL };
     if (!DATI.provvisorio && !/^[a-z0-9'\-]+(\.[a-z0-9'\-]+)*\.(\d{6,7})@studenti\.uniroma1\.it$/.test(email)) return { campo: 'email', testo: MSG.EMAIL };
+    if (DATI.provvisorio) return null;
     var cifre = /(?:^|[._\-])(\d{6,7})@/.exec(email);
     if (cifre && /^\d{6,7}$/.test(matricola) && cifre[1] !== matricola) return { campo: 'matricola', testo: MSG.MATRICOLA_EMAIL };
     return null;
@@ -275,6 +280,8 @@
       attesaDati = vaiA2;
       var b = document.querySelector('.azioni .primario');
       if (b) b.disabled = true;
+      var avvisoCaricamento = $('stato-caricamento');
+      if (avvisoCaricamento) avvisoCaricamento.textContent = 'Verifica dei dati del modulo in corso, attenda qualche secondo.';
       return;
     }
     var precedente = stato.corso, errori = [], e;
@@ -393,7 +400,7 @@
     var invia = el('button', { type: 'button', classe: 'primario', id: 'invia', testo: 'Invia la richiesta', disabled: true, onclick: inviaDati });
     conferma.addEventListener('change', function () { invia.disabled = !conferma.checked; });
     p.appendChild(el('label', { classe: 'opzione', 'for': 'conferma' }, [conferma,
-      'Dichiaro di aver verificato i dati e le sei preferenze indicate e di aver letto l\'informativa sul trattamento dei dati personali.']));
+      'Dichiaro di aver verificato i dati e le ' + parole(DATI.numPreferenze) + ' preferenze indicate e di aver letto l\'informativa sul trattamento dei dati personali.']));
     p.appendChild(el('div', { id: 'stato-invio', role: 'status', classe: 'aiuto' }));
     p.appendChild(el('div', { classe: 'azioni' }, [el('button', { type: 'button', testo: 'Modifica le preferenze', id: 'modifica', onclick: function () { passo2(); } }), invia]));
     app().appendChild(p);
@@ -406,11 +413,15 @@
     $('conferma').disabled = true;
     var info = $('stato-invio');
     info.textContent = 'Invio in corso. Non chiuda la pagina.';
-    var pacchetto = { corso: stato.corso, cognome: stato.cognome, nome: stato.nome, matricola: stato.matricola, email: stato.email,
+    if (!stato.idInvio) {
+      stato.idInvio = 'x' + new Date().getTime().toString(36) + Math.random().toString(36).slice(2, 12);
+    }
+    var pacchetto = { id: stato.idInvio, corso: stato.corso, cognome: stato.cognome, nome: stato.nome, matricola: stato.matricola, email: stato.email,
       preferenze: stato.preferenze.slice(0, DATI.numPreferenze) };
     invioConRipetizioni(pacchetto, info, 0);
   }
 
+  var occupati = 0;
   function invioConRipetizioni(pacchetto, info, tentativo) {
     function ripeti() {
       if (tentativo >= 12) {
@@ -418,20 +429,31 @@
         $('invia').disabled = false; $('modifica').disabled = false; $('conferma').disabled = false;
         return mostraErrori([{ campo: '-', testo: 'La richiesta non è stata registrata. Riprovi tra qualche minuto.' }]);
       }
-      info.textContent = 'Il servizio è molto richiesto: l\'invio viene ripetuto automaticamente. Non chiuda la pagina.';
-      var attesa = Math.min(15000, 1000 * Math.pow(2, Math.min(tentativo, 4))) * (0.5 + Math.random());
+      info.textContent = 'Invio in corso, il servizio sta rispondendo lentamente. Non chiuda la pagina.';
+      var attesa = Math.min(20000, 3000 * (tentativo + 1)) * (0.6 + Math.random() * 0.6);
       setTimeout(function () { invioConRipetizioni(pacchetto, info, tentativo + 1); }, attesa);
     }
     function gestisci(r) {
-      if (!r || r.codice === 'OCCUPATO') { tentativo = Math.min(tentativo, 3); return ripeti(); }
+      if (!r || r.codice === 'OCCUPATO') { occupati++; tentativo = occupati > 25 ? 12 : Math.min(tentativo, 3); return ripeti(); }
       if (r.codice === 'SERVER') return ripeti();
-      if (r.ok) return esito(r);
+      if (r.ok) {
+        if (!r.riepilogo || !r.riepilogo.preferenze || !r.riepilogo.preferenze.length) return ripeti();
+        return esito(r);
+      }
       if (r.codice === 'CHIUSO' || r.codice === 'GIA_INVIATA') return messaggioUnico(r.messaggio);
       if (/^preferenza/.test(r.campo || '')) return passo2([{ campo: r.campo, testo: r.messaggio }]);
       if (r.campo) return passo1([{ campo: r.campo, testo: r.messaggio }]);
       passo3(r.messaggio);
     }
-    chiamaServer({ azione: 'invia', d: JSON.stringify(pacchetto) }, gestisci, ripeti);
+    var corpo = JSON.stringify(pacchetto);
+    function conScript() { chiamaServer({ azione: 'invia', d: corpo }, gestisci, ripeti, 90000); }
+    if (window.fetch) {
+      window.fetch(URL_MODULO, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: corpo })
+        .then(function (risposta) { return risposta.json(); })
+        .then(gestisci, conScript);
+    } else {
+      conScript();
+    }
   }
 
   function esito(r) {
@@ -471,16 +493,18 @@
       setTimeout(function () { caricaDati(tentativo + 1); }, 1500 * (tentativo + 1));
     }
     chiamaServer({ azione: 'dati' }, function (d) {
-      if (fatto) return; fatto = true;
+      if (fatto) return;
       if (!d || !d.stato) return riprova();
+      fatto = true;
       var focus = document.activeElement ? document.activeElement.id : '';
+      var corsiPrecedenti = JSON.stringify(DATI.corsi);
       leggiCampiPasso1();
       d.urlInvio = URL_MODULO;
       DATI = d;
       $('piede').innerHTML = ''; piede();
       if (DATI.stato !== 'aperto') return messaggioUnico(DATI.messaggio);
       if (stato.passo === 1) {
-        if (DATI.provvisorio !== true) {
+        if (DATI.provvisorio !== true || JSON.stringify(DATI.corsi) !== corsiPrecedenti) {
           passo1();
           if (focus && $(focus)) $(focus).focus();
         } else if (DATI.chiusura && !document.querySelector('.sottotitolo')) {

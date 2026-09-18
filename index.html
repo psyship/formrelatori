@@ -93,10 +93,30 @@
 
 <script>
   /* INCOLLARE QUI, FRA GLI APICI, L'INDIRIZZO DELL'APP WEB CHE FINISCE CON /exec */
-  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbwRBbU2us2SLGjAMVqiVV47WogyV7T_6N_ZPr_XRdlYetPpaTBV8DGDzAmTozLZhjas/exec';
+  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbzz5JBWyl9OD6HHe1mepuPz86zhjmOc_LlcpHmZZxK4lvLhUSptO3vwfd-9UJplwFwf/exec';
   var DATI = { stato: 'aperto', caricamento: true, urlInvio: URL_MODULO, provvisorio: true, numPreferenze: 6, docenti: [], indicazioni: '',
     corsi: [{ codice: 'PS', nome: 'Psicologia e Salute' }, { codice: 'PPS', nome: 'Psicologia e Processi Sociali' }] };
   var attesaDati = null;
+  var contatoreChiamate = 0;
+
+  /* Chiamata al server tramite <script>: nessun browser la blocca. */
+  function chiamaServer(parametri, esito, errore) {
+    var nome = 'risposta' + (++contatoreChiamate) + '_' + Math.floor(Math.random() * 1e6);
+    var s = document.createElement('script');
+    var chiuso = false, timer;
+    function pulisci() {
+      if (s.parentNode) s.parentNode.removeChild(s);
+      try { delete window[nome]; } catch (e) { window[nome] = undefined; }
+      if (timer) clearTimeout(timer);
+    }
+    window[nome] = function (dati) { if (chiuso) return; chiuso = true; pulisci(); esito(dati); };
+    s.onerror = function () { if (chiuso) return; chiuso = true; pulisci(); errore(); };
+    timer = setTimeout(function () { if (chiuso) return; chiuso = true; pulisci(); errore(); }, 20000);
+    var coda = 'callback=' + nome + '&t=' + new Date().getTime();
+    for (var k in parametri) if (parametri.hasOwnProperty(k)) coda += '&' + k + '=' + encodeURIComponent(parametri[k]);
+    s.src = URL_MODULO + '?' + coda;
+    document.body.appendChild(s);
+  }
   var TITOLO = 'Richiesta del relatore per la prova finale';
   var MSG = {
     EMAIL: 'L\'indirizzo di posta elettronica istituzionale non risulta corretto. Per favore, controlli.',
@@ -411,17 +431,7 @@
       if (r.campo) return passo1([{ campo: r.campo, testo: r.messaggio }]);
       passo3(r.messaggio);
     }
-    function conGoogle() {
-      if (typeof google === 'undefined' || !google.script) return ripeti();
-      google.script.run.withSuccessHandler(gestisci).withFailureHandler(ripeti).inviaRichiesta(pacchetto);
-    }
-    if (DATI.urlInvio && window.fetch) {
-      window.fetch(DATI.urlInvio, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(pacchetto) })
-        .then(function (risposta) { return risposta.json(); })
-        .then(gestisci, conGoogle);
-    } else {
-      conGoogle();
-    }
+    chiamaServer({ azione: 'invia', d: JSON.stringify(pacchetto) }, gestisci, ripeti);
   }
 
   function esito(r) {
@@ -460,8 +470,7 @@
       if (tentativo >= 6) { $('piede').innerHTML = ''; return messaggioUnico('Il servizio non è al momento disponibile. Riprovi tra qualche minuto.'); }
       setTimeout(function () { caricaDati(tentativo + 1); }, 1500 * (tentativo + 1));
     }
-    if (!window.fetch) return messaggioUnico('Il suo browser non è aggiornato: apra il modulo con un browser recente.');
-    window.fetch(URL_MODULO + '?formato=json').then(function (r) { return r.json(); }).then(function (d) {
+    chiamaServer({ azione: 'dati' }, function (d) {
       if (fatto) return; fatto = true;
       if (!d || !d.stato) return riprova();
       var focus = document.activeElement ? document.activeElement.id : '';

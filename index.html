@@ -14,7 +14,6 @@
   }
   html.testo-1 { --corpo: 22px; }
   html.testo-2 { --corpo: 25px; }
-  html.sfondo-caldo { --sfondo: #f7f1e3; --superficie: #fffcf4; }
   * { box-sizing: border-box; }
   body { margin: 0; background: #f2f2f2; background: var(--sfondo); color: #1d1d1b; color: var(--testo);
     font-family: Verdana, Tahoma, "Segoe UI", sans-serif; font-size: 19px; font-size: var(--corpo);
@@ -94,7 +93,7 @@
 
 <script>
   /* INCOLLARE QUI, FRA GLI APICI, L'INDIRIZZO DELL'APP WEB CHE FINISCE CON /exec */
-  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbxLygqdlgXKWjYz3B5Od_5ZIgMfJxak53yeMSYBmQa7W7u-xhM6m1CqaMUAeN4PhUyH/exec';
+  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbzT-s32AA2LccMNxGjyfVDdFto_d2pbaNgfQVXpf2yEtHkLa0tI75N0lgwAWRUYCNGS/exec';
   var DATI = { stato: 'aperto', caricamento: true, urlInvio: URL_MODULO, provvisorio: true, numPreferenze: 6, docenti: [], indicazioni: '',
     corsi: [{ codice: 'PS', nome: 'Psicologia e Salute' }, { codice: 'PPS', nome: 'Psicologia e Processi Sociali' }] };
   var attesaDati = null;
@@ -143,17 +142,14 @@
   function valore(id) { var n = $(id); return n ? String(n.value).replace(/^\s+|\s+$/g, '') : ''; }
 
   function comandiLettura() {
-    var r = document.documentElement, piu, meno, sfondo;
+    var r = document.documentElement, piu, meno;
     function aggiorna() {
       r.className = r.className.replace(/\s*testo-\d/g, '') + (livelloTesto ? ' testo-' + livelloTesto : '');
       piu.disabled = livelloTesto === 2; meno.disabled = livelloTesto === 0;
-      sfondo.setAttribute('aria-pressed', /sfondo-caldo/.test(r.className) ? 'true' : 'false');
     }
     piu = el('button', { type: 'button', testo: 'Ingrandisci il testo', onclick: function () { livelloTesto = Math.min(2, livelloTesto + 1); aggiorna(); } });
     meno = el('button', { type: 'button', testo: 'Riduci il testo', onclick: function () { livelloTesto = Math.max(0, livelloTesto - 1); aggiorna(); } });
-    sfondo = el('button', { type: 'button', testo: 'Sfondo color crema', onclick: function () {
-      r.className = /sfondo-caldo/.test(r.className) ? r.className.replace(/\s*sfondo-caldo/g, '') : r.className + ' sfondo-caldo'; aggiorna(); } });
-    var g = el('div', { classe: 'comandi', role: 'group', 'aria-label': 'Preferenze di lettura' }, [piu, meno, sfondo]);
+    var g = el('div', { classe: 'comandi', role: 'group', 'aria-label': 'Dimensione del testo' }, [piu, meno]);
     aggiorna();
     return g;
   }
@@ -236,7 +232,7 @@
       { tipo: 'email', autocomplete: 'off', autocapitalize: 'none' });
     ogni(['paste', 'drop'], function (ev) { campoEmail2.querySelector('input').addEventListener(ev, function (e) { e.preventDefault(); }); });
     p.appendChild(campoEmail2);
-    p.appendChild(el('div', { classe: 'azioni' }, [el('button', { type: 'button', classe: 'primario', testo: 'Prosegui', onclick: vaiA2 })]));
+    p.appendChild(el('div', { classe: 'azioni' }, [el('button', { type: 'button', classe: 'primario', testo: 'Avanti', onclick: vaiA2 })]));
     app().appendChild(p);
     if (errori && errori.length) mostraErrori(errori); else apriPasso('t1');
   }
@@ -256,7 +252,7 @@
     if (DATI.caricamento) {
       attesaDati = vaiA2;
       var b = document.querySelector('.azioni .primario');
-      if (b) { b.disabled = true; b.textContent = 'Caricamento dei docenti…'; }
+      if (b) b.disabled = true;
       return;
     }
     var precedente = stato.corso, errori = [], e;
@@ -308,7 +304,7 @@
     }
     p.appendChild(el('div', { classe: 'azioni' }, [
       el('button', { type: 'button', testo: 'Torna indietro', onclick: function () { passo1(); } }),
-      el('button', { type: 'button', classe: 'primario', testo: 'Prosegui', onclick: vaiA3 })]));
+      el('button', { type: 'button', classe: 'primario', testo: 'Avanti', onclick: vaiA3 })]));
     app().appendChild(p);
     aggiornaMenu();
     if (errori && errori.length) mostraErrori(errori); else apriPasso('t2');

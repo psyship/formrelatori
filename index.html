@@ -93,7 +93,7 @@
 
 <script>
   /* INCOLLARE QUI, FRA GLI APICI, L'INDIRIZZO DELL'APP WEB CHE FINISCE CON /exec */
-  var URL_MODULO = 'https://script.google.com/macros/s/AKfycby06RRZQ_X9MqSkXFOdxLS8Gz1LsIn3NwhvagOUfcQkLHGueW08im3rBtMN-LQxJspQ/exec';
+  var URL_MODULO = 'https://script.google.com/macros/s/AKfycbwRBbU2us2SLGjAMVqiVV47WogyV7T_6N_ZPr_XRdlYetPpaTBV8DGDzAmTozLZhjas/exec';
   var DATI = { stato: 'aperto', caricamento: true, urlInvio: URL_MODULO, provvisorio: true, numPreferenze: 6, docenti: [], indicazioni: '',
     corsi: [{ codice: 'PS', nome: 'Psicologia e Salute' }, { codice: 'PPS', nome: 'Psicologia e Processi Sociali' }] };
   var attesaDati = null;
@@ -226,12 +226,14 @@
       campoEmail.className += ' provvisorio';
       campoEmail.insertBefore(el('p', { classe: 'etichetta-provvisoria', testo: 'Campo provvisorio: in questa fase di prova il modulo accetta qualsiasi indirizzo email valido.' }), campoEmail.firstChild);
     }
-    ogni(['copy', 'cut'], function (ev) { campoEmail.querySelector('input').addEventListener(ev, function (e) { e.preventDefault(); }); });
+    if (!DATI.provvisorio) ogni(['copy', 'cut'], function (ev) { campoEmail.querySelector('input').addEventListener(ev, function (e) { e.preventDefault(); }); });
     p.appendChild(campoEmail);
-    var campoEmail2 = campoTesto('email2', 'Ripeta l\'email istituzionale', 'Digiti nuovamente l\'indirizzo: non è possibile incollarlo.', stato.email2,
-      { tipo: 'email', autocomplete: 'off', autocapitalize: 'none' });
-    ogni(['paste', 'drop'], function (ev) { campoEmail2.querySelector('input').addEventListener(ev, function (e) { e.preventDefault(); }); });
-    p.appendChild(campoEmail2);
+    if (!DATI.provvisorio) {
+      var campoEmail2 = campoTesto('email2', 'Ripeta l\'email istituzionale', 'Digiti nuovamente l\'indirizzo: non è possibile incollarlo.', stato.email2,
+        { tipo: 'email', autocomplete: 'off', autocapitalize: 'none' });
+      ogni(['paste', 'drop'], function (ev) { campoEmail2.querySelector('input').addEventListener(ev, function (e) { e.preventDefault(); }); });
+      p.appendChild(campoEmail2);
+    }
     p.appendChild(el('div', { classe: 'azioni' }, [el('button', { type: 'button', classe: 'primario', testo: 'Avanti', onclick: vaiA2 })]));
     app().appendChild(p);
     if (errori && errori.length) mostraErrori(errori); else apriPasso('t1');
@@ -261,7 +263,7 @@
     stato.nome = valore('nome').replace(/\s+/g, ' ');
     stato.matricola = valore('matricola');
     stato.email = valore('email').toLowerCase();
-    stato.email2 = valore('email2').toLowerCase();
+    stato.email2 = $('email2') ? valore('email2').toLowerCase() : '';
     if (precedente && precedente !== stato.corso) {
       stato.preferenze = stato.preferenze.map(function (id) { var d = perId(id); return d && d.corsi.indexOf(stato.corso) !== -1 ? id : ''; });
     }
@@ -271,7 +273,7 @@
     if (!/^\d{6,7}$/.test(stato.matricola)) errori.push({ campo: 'matricola', testo: MSG.MATRICOLA });
     e = controllaEmail(stato.email, stato.matricola);
     if (e) errori.push(e);
-    if (!e || e.campo !== 'email') {
+    if (!DATI.provvisorio && (!e || e.campo !== 'email')) {
       if (!stato.email2) errori.push({ campo: 'email2', testo: 'Digiti nuovamente l\'indirizzo di posta elettronica.' });
       else if (stato.email2 !== stato.email) errori.push({ campo: 'email2', testo: 'I due indirizzi di posta elettronica non coincidono. Per favore, controlli.' });
     }
